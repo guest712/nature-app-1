@@ -5,52 +5,41 @@
   <title>Nature App</title>
   <style>
     body {
-      background-color: #e4fbd1; /* нежно-салатовый */
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding-top: 50px;
-  background-image: url('leaves.png'); /* фон из листьев */
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-    }
-
-    h1 {
-      color: #1a5e1a;
-  background-color: #c4f0c4;
-  padding: 10px;
-  border-radius: 12px;
-    }
-
-    button {
-      background-color: #4CAF50;
+      margin: 0;
+      padding: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
       color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
+      text-shadow: 1px 1px 3px #000;
     }
-
-    button:hover {
-      background-color: #45a049;
+    h1 { font-size: 2.5em; margin-bottom: 10px; }
+    .green-button {
+      background:#4CAF50;color:#fff;padding:10px 20px;border:none;border-radius:8px;
+      cursor:pointer;font-size:16px;margin-top:20px;box-shadow:0 2px 5px rgba(0,0,0,.3);
     }
-
-    #response {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #2e8b57;
+    .green-button:hover { background:#45a049; }
+    .orange-button {
+      background:#FFA500;color:#fff;padding:20px 40px;border:none;border-radius:12px;
+      cursor:pointer;font-size:20px;margin-top:20px;box-shadow:0 4px 8px rgba(0,0,0,.4);
     }
+    .orange-button:hover { background:#ff8c00; }
+    #response { margin-top:15px; font-weight:bold; }
   </style>
 </head>
 <body>
   <h1>Добро пожаловать в Nature App 🌿</h1>
-  <img src="logo.png" alt="Логотип Nature App" width="200"><br><br>
-   <img src="leaf.png" alt="Лист" width="150" style="position: absolute; top: 20px; left: 20px;">
-   <img src="butterfly.png" alt="Бабочка" width="120" style="position: absolute; bottom: 30px; right: 40px;">
 
+  <button class="green-button" onclick="thankNature()">Я хочу помочь природе</button>
+  <button class="orange-button" onclick="startHelping()">Начать помогать 🌍</button>
 
-  <button onclick="thankNature()">Я хочу помочь природе</button>
   <p id="response"></p>
 
   <script>
@@ -61,11 +50,12 @@
         "Каждое доброе дело — это шаг к свету 🌞",
         "Ты не один(а), природа с тобой 🍃"
       ];
-      const randomMessage = responses[Math.floor(Math.random() * responses.length)];
-      document.getElementById("response").textContent = randomMessage;
+      const i = Math.floor(Math.random() * responses.length);
+      document.getElementById("response").textContent = responses[i];
+    }
+    function startHelping() {
+      alert("Ты уже сделал первый шаг! Природа благодарит тебя 🌱");
     }
   </script>
 </body>
 </html>
-
-update1
