@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Nature App</title>
+  <meta charset="UTF-8" />
+  <title>Nature App — v1.1 🌿</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-image: url('background.png');
+      background-image: url('background.png'); /* оставь или замени на свой фон */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -19,28 +19,66 @@
       font-family: Arial, sans-serif;
       color: white;
       text-shadow: 1px 1px 3px #000;
+      overflow: hidden; /* чтобы лепестки не давали скролл */
     }
-    h1 { font-size: 2.5em; margin-bottom: 10px; }
+
+    h1 { font-size: 2.4em; margin: 0 0 6px; animation: fadeIn 800ms ease-out both; }
+    .release { opacity: 0.9; font-size: 0.95em; margin-bottom: 14px; animation: fadeInUp 900ms ease-out 120ms both; }
+
+    .green-button, .orange-button {
+      border: none; cursor: pointer; color: #fff; box-shadow: 0 3px 8px rgba(0,0,0,.35);
+      transition: transform .15s ease, filter .15s ease, background-color .2s ease;
+    }
     .green-button {
-      background:#4CAF50;color:#fff;padding:10px 20px;border:none;border-radius:8px;
-      cursor:pointer;font-size:16px;margin-top:20px;box-shadow:0 2px 5px rgba(0,0,0,.3);
+      background:#4CAF50; border-radius: 8px; padding:10px 20px; font-size:16px; margin-top:14px;
+      animation: fadeInUp 900ms ease-out 160ms both;
     }
-    .green-button:hover { background:#45a049; }
+    .green-button:hover { background:#45a049; transform: translateY(-1px); filter: brightness(1.02); }
+
     .orange-button {
-      background:#FFA500;color:#fff;padding:20px 40px;border:none;border-radius:12px;
-      cursor:pointer;font-size:20px;margin-top:20px;box-shadow:0 4px 8px rgba(0,0,0,.4);
+      background:#FFA500; border-radius: 12px; padding:20px 40px; font-size:20px; margin-top:18px;
+      animation: popIn 600ms ease-out 220ms both;
     }
-    .orange-button:hover { background:#ff8c00; }
-    #response { margin-top:15px; font-weight:bold; }
+    .orange-button:hover { background:#ff8c00; transform: translateY(-1px) scale(1.01); }
+
+    #response { margin-top: 12px; font-weight: bold; min-height: 1.2em; animation: fadeIn 700ms ease-out 300ms both; }
+
+    /* Контейнер для летящих элементов */
+    #petal-layer {
+      position: fixed; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .petal {
+      position: absolute; bottom: -40px; opacity: 0.9;
+      font-size: 18px; /* базовый размер — далее множим */
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      animation: rise linear forwards;
+    }
+
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translateY(-115vh) translateX(var(--dx, 0px)) rotate(var(--rot, 0deg)); opacity: 0; }
+    }
+
+    @keyframes fadeIn   { from { opacity:0; transform: translateY(2px); } to { opacity:1; transform:none; } }
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform:none; } }
+    @keyframes popIn    { 0% { opacity:0; transform: scale(.96); } 100% { opacity:1; transform: scale(1); } }
   </style>
 </head>
 <body>
   <h1>Добро пожаловать в Nature App 🌿</h1>
+  <div class="release">Версия 1.1 — спасибо, что ты с нами ✨</div>
 
   <button class="green-button" onclick="thankNature()">Я хочу помочь природе</button>
   <button class="orange-button" onclick="startHelping()">Начать помогать 🌍</button>
 
   <p id="response"></p>
+
+  <!-- Слой для лепестков/листочков -->
+  <div id="petal-layer" aria-hidden="true"></div>
+
+  <!-- Опциональный звук: положи рядом файл chime.mp3, иначе будет тихо -->
+  <audio id="celebration-audio" src="chime.mp3" preload="auto"></audio>
 
   <script>
     function thankNature() {
@@ -50,11 +88,57 @@
         "Каждое доброе дело — это шаг к свету 🌞",
         "Ты не один(а), природа с тобой 🍃"
       ];
-      const i = Math.floor(Math.random() * responses.length);
-      document.getElementById("response").textContent = responses[i];
+      const msg = responses[Math.floor(Math.random() * responses.length)];
+      document.getElementById("response").textContent = msg;
     }
+
+    // Запуск «лепестков» и опционального звука
     function startHelping() {
-      alert("Ты уже сделал первый шаг! Природа благодарит тебя 🌱");
+      document.getElementById("response").textContent = "Праздничный старт! Спасибо за твой свет 💚";
+      launchPetals({ type: "sakura", duration: 2500, count: 36 }); // можно type: "rose" или "leaf"
+      tryPlayCelebration();
+    }
+
+    function tryPlayCelebration() {
+      const audio = document.getElementById('celebration-audio');
+      if (!audio) return;
+      // Браузеры разрешают воспроизведение после взаимодействия пользователя
+      audio.currentTime = 0;
+      audio.play().catch(()=>{/* если файла нет или блокировано — просто без звука */});
+    }
+
+    // Создание летящих символов: 🌸, 🌹, 🍃 — без картинок, всё на чистом тексте-эмодзи
+    function launchPetals({ type = "sakura", duration = 2500, count = 30 } = {}) {
+      const layer = document.getElementById('petal-layer');
+      const symbols = type === "rose" ? ["🌹","🌹","🌹","🌺"] :
+                      type === "leaf" ? ["🍃","🍂","🍁"] :
+                                        ["🌸","💮","🌸"]; // sakura по умолчанию
+
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'petal';
+        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+        // Случайные параметры
+        const startX = Math.random() * window.innerWidth;
+        const dx = (Math.random() * 160 - 80) + 'px';          // горизонтальный «снос»
+        const rot = (Math.random() * 360 * (Math.random()<.5?-1:1)) + 'deg';
+        const scale = 0.6 + Math.random() * 1.2;
+        const delay = Math.random() * 300;                     // небольшое рассинхро
+
+        el.style.left = startX + 'px';
+        el.style.setProperty('--dx', dx);
+        el.style.setProperty('--rot', rot);
+        el.style.fontSize = (18 * scale) + 'px';
+        el.style.animationDuration = (duration + Math.random()*1200) + 'ms';
+        el.style.animationDelay = delay + 'ms';
+
+        layer.appendChild(el);
+
+        // Удаляем после завершения анимации
+        const total = duration + 1400;
+        setTimeout(() => layer.removeChild(el), total + delay);
+      }
     }
   </script>
 </body>
