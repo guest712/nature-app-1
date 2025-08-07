@@ -85,7 +85,7 @@
 window.addEventListener('DOMContentLoaded', () => {
   launchPetals({ type: "sakura", duration: 2600, count: 24 });
   // Если хочешь постоянную «дымку» лепестков:
-  // setInterval(() => launchPetals({ type: "leaf", duration: 2600, count: 8 }), 3000);
+  // setInterval((10) => launchPetals({ type: "leaf", duration: 2600, count: 8 }), 3000);
 });
 
     function thankNature() {
@@ -93,7 +93,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Спасибо! Природа чувствует твою заботу 🌿",
         "Ты делаешь этот мир лучше 💚",
         "Каждое доброе дело — это шаг к свету 🌞",
-        "Ты не один(а), природа с тобой 🍃"
+        "Ты не один(а), природа с тобой 🍃🍃🍃"
       ];
       const msg = responses[Math.floor(Math.random() * responses.length)];
       document.getElementById("response").textContent = msg;
@@ -118,7 +118,7 @@ window.addEventListener('DOMContentLoaded', () => {
     function launchPetals({ type = "sakura", duration = 2500, count = 30 } = {}) {
       const layer = document.getElementById('petal-layer');
       const symbols = type === "rose" ? ["🌹","🌹","🌹","🌺"] :
-                      type === "leaf" ? ["🍃","🍂","🍁"] :
+                      type === "leaf" ? ["🍃","🍃","🍁"] :
                                         ["🌸","💮","🌸"]; // sakura по умолчанию
 
       for (let i = 0; i < count; i++) {
