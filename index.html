@@ -3,13 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <title>Nature App</title>
+  <style>
+    body {
+      background-color: #d4f4dd;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    h1 {
+      color: #228B22;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #response {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #2e8b57;
+    }
+  </style>
 </head>
 <body>
   <h1>Добро пожаловать в Nature App 🌿</h1>
-  <img src="logo.png" alt="Nature App Logo" width="200">
+  <img src="logo.png" alt="Логотип Nature App" width="200"><br><br>
 
-  <button onclick="showAction()">Хочу помочь природе</button>
-  <p id="actionText"></p>
+  <button onclick="thankNature()">Я хочу помочь природе</button>
+  <p id="response"></p>
 
-  <script src="script.js"></script>
-</body></html>
+  <script>
+    function thankNature() {
+      const responses = [
+        "Спасибо! Природа чувствует твою заботу 🌿",
+        "Ты делаешь этот мир лучше 💚",
+        "Каждое доброе дело — это шаг к свету 🌞",
+        "Ты не один(а), природа с тобой 🍃"
+      ];
+      const randomMessage = responses[Math.floor(Math.random() * responses.length)];
+      document.getElementById("response").textContent = randomMessage;
+    }
+  </script>
+</body>
+</html>
