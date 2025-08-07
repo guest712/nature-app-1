@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Nature App</title>
-  <style>
+  <style
+#startHelp {
+  background-color: orange;
+  color: white;
+  padding: 20px 40px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 20px;
+  margin-top: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+#startHelp:hover {
+  background-color: darkorange;
+}>
     body {
       margin: 0;
       padding: 0;
@@ -49,11 +64,15 @@
   </style>
 </head>
 <body>
+  <button id="startHelp" onclick="startHelping()">Начать помогать 🌍</button>
   <h1>Добро пожаловать в Nature App 🌿</h1>
   <button onclick="thankNature()">Я хочу помочь природе</button>
   <p id="response"></p>
 
   <script>
+    function startHelping() {
+  alert("Ты уже сделал первый шаг! Природа благодарит тебя 🌱");
+}    
     function thankNature() {
       const responses = [
         "Спасибо! Природа чувствует твою заботу 🌿",
