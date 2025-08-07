@@ -81,6 +81,13 @@
   <audio id="celebration-audio" src="chime.mp3" preload="auto"></audio>
 
   <script>
+    // Автозапуск лёгкого «дождя» лепестков при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+  launchPetals({ type: "sakura", duration: 2600, count: 24 });
+  // Если хочешь постоянную «дымку» лепестков:
+  // setInterval(() => launchPetals({ type: "leaf", duration: 2600, count: 8 }), 3000);
+});
+
     function thankNature() {
       const responses = [
         "Спасибо! Природа чувствует твою заботу 🌿",
