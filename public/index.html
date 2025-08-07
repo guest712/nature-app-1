@@ -5,14 +5,27 @@
   <title>Nature App</title>
   <style>
     body {
-      background-color: #d4f4dd;
+      margin: 0;
+      padding: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 50px;
+      color: white;
+      text-shadow: 1px 1px 3px #000;
     }
+
     h1 {
-      color: #228B22;
+      font-size: 2.5em;
+      margin-bottom: 10px;
     }
+
     button {
       background-color: #4CAF50;
       color: white;
@@ -21,22 +34,23 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
+      margin-top: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
+
     button:hover {
       background-color: #45a049;
     }
+
     #response {
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
-      color: #228B22;
     }
   </style>
 </head>
 <body>
   <h1>Добро пожаловать в Nature App 🌿</h1>
-  <img src="logo.png" alt="Nature App Logo" width="200"><br><br>
-
-  <button onclick="thankNature()">Хочу помочь природе</button>
+  <button onclick="thankNature()">Я хочу помочь природе</button>
   <p id="response"></p>
 
   <script>
@@ -53,6 +67,3 @@
   </script>
 </body>
 </html>
-<!-- добавь -->
-<!-- Версия обновлена вручную -->
-
