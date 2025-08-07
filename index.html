@@ -1,33 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Забота о природе</title>
-</head
-<style>
-  button {
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #45a049;
-  }
-</style>>
+  <meta charset="UTF-8">
+  <title>Nature App</title>
+</head>
 <body>
-  <h1>Добро пожаловать 🌿</h1>
-  <p>Это приложение, которое поможет людям задуматься о природе и окружающей среде.</p>
-  <button onclick="alert('Спасибо за заботу! 🌱')">Нажми сюда</button>
-</body
-<button onclick="reportIssue()">Сообщить о мусоре 🚯</button>
+  <h1>Добро пожаловать в Nature App 🌿</h1>
+  <img src="logo.png" alt="Nature App Logo" width="200">
 
-<script>
-  function reportIssue() {
-    alert("Спасибо за сигнал! Мы передадим информацию 🌱");
-  }
-</script>>
-</html>
+  <button onclick="showAction()">Хочу помочь природе</button>
+  <p id="actionText"></p>
+
+  <script src="script.js"></script>
+</body></html>

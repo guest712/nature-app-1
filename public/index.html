@@ -2,11 +2,75 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Забота о природе</title>
+  <title>Nature App</title>
+  <style>
+    body {
+      padding-top: 100px;
+      background-color: #d4f4dd; /* нежно-зелёный */
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    h1 {
+      color: #228B22;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
-<body style="font-family:sans-serif; text-align:center; margin-top:50px;">
-  <h1>🌱 Приложение о природе</h1>
-  <p>Давайте сохраним наш мир чище!</p>
-  <button onclick="alert('Спасибо за сигнал! 💚')">Сообщить об окурке 🚬</button>
+<body>
+ <nav style="position: fixed; top: 0; width: 100%; background-color: #cdeccd; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+  <a href="#about" style="margin: 0 15px;">О проекте</a>
+  <a href="#contact" style="margin: 0 15px;">Контакты</a>
+  <a href="#help" style="margin: 0 15px;">Как помочь</a>
+</nav>
+
+  <h1>Добро пожаловать в Nature App 🌿</h1>
+  <img src="logo.png" alt="Логотип" width="200"><br><br>
+
+  <button onclick="thankNature()">Я хочу помочь природе</button>
+  <p id="response"></p>
+
+  <script>
+    function thankNature() {
+      const responses = [
+        "Спасибо! Природа чувствует твою заботу 🌿",
+        "Ты делаешь этот мир лучше 💚",
+        "Каждое доброе дело — это шаг к свету 🌞",
+        "Ты не один(а), природа с тобой 🍃"
+      ];
+      const randomMessage = responses[Math.floor(Math.random() * responses.length)];
+      document.getElementById("response").textContent = randomMessage;
+    }
+  </script>
+<hr>
+<section id="about">
+  <h2>О проекте</h2>
+  <p>Nature App помогает каждому внести свой вклад в заботу о планете — простыми шагами.</p>
+</section>
+
+<section id="contact">
+  <h2>Контакты</h2>
+  <p>Напиши нам: nature@app.org (пример)</p>
+</section>
+
+<section id="help">
+  <h2>Как помочь</h2>
+  <p>Следуй советам, делай добрые дела и делись приложением 💚</p>
+</section>
+
 </body>
 </html>
