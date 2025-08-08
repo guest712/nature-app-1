@@ -1,90 +1,168 @@
 <!DOCTYPE html>
+<!-- Спасибо тебе, Лес. Спасибо тебе, Лист. Ты часть вдохновения, жизни и тепла этого проекта 🌱 -->
+<!-- Спасибо тебе, Солнце. Ты кормишь, согреваешь и соединяешь нас всех в круговороте жизни ☀️ -->
+
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <title>Nature App</title>
   <style>
+    /* слой для PNG-листьев */
+    #leaf-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .leaf {
+      position: absolute;
+      bottom: -60px;               /* старт из-под низа */
+      will-change: transform, opacity;
+      opacity: 0.9;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      transform-origin: 50% 50%;
+      animation:
+        rise var(--dur, 3500ms) linear forwards,
+        sway var(--swayDur, 1800ms) ease-in-out infinite alternate;
+    }
+
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translateY(-115vh) translateX(var(--dx, 0px)) rotate(var(--rot, 0deg)); opacity: 0; }
+    }
+
+    @keyframes sway {
+      from { transform: translateY(var(--y, 0)) translateX(-8px) rotate(var(--rA, -6deg)); }
+      to   { transform: translateY(var(--y, 0)) translateX( 8px) rotate(var(--rB,  6deg)); }
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background-image: url('background.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
       height: 100vh;
+      background: #e4fbd1 url('leaves.png') center/cover no-repeat;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       font-family: Arial, sans-serif;
-      color: white;
-      text-shadow: 1px 1px 3px #000;
+      color: #2e4d2e;
+      overflow: hidden;
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 10px 20px;
+      border-radius: 12px;
+      margin: 0 0 8px;
     }
+
+    #counter { font-size: 20px; margin-top: 10px; }
 
     button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    #startHelp {
       background-color: orange;
       color: white;
-      padding: 20px 40px;
+      padding: 15px 30px;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 18px;
       margin-top: 20px;
       box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      transition: transform .15s ease, filter .15s ease;
     }
+    button:hover { background-color: darkorange; transform: translateY(-1px); filter: brightness(1.03); }
 
-    #startHelp:hover {
-      background-color: darkorange;
-    }
-
-    #response {
+    #quote {
       margin-top: 15px;
-      font-weight: bold;
+      font-style: italic;
+      text-align: center;
+      max-width: 300px;
     }
   </style>
 </head>
 <body>
-  <button id="startHelp" onclick="startHelping()">Начать помогать 🌍</button>
+  <div id="leaf-layer" aria-hidden="true"></div>
+
   <h1>Добро пожаловать в Nature App 🌿</h1>
-  <button onclick="thankNature()">Я хочу помочь природе</button>
-  <p id="response"></p>
+  <p id="counter">Ты уже сделал 0 добрых дел 💚</p>
+  <button onclick="helpNature()">Я помог природе 🌱</button>
+  <p id="quote"></p>
 
   <script>
-    function startHelping() {
-      alert("Ты уже сделал первый шаг! Природа благодарит тебя 🌱");
+    // --- Благодарности в коде ---
+    /* Спасибо тебе, Лес. Спасибо тебе, Лист. Ты часть вдохновения, жизни и тепла этого проекта 🌱 */
+    /* Спасибо тебе, Солнце. Ты кормишь, согреваешь и соединяешь нас всех в круговороте жизни ☀️ */
+
+    // PNG-листья рядом с index.html
+    const LEAF_IMAGES = ['leaf_heart.png','leaf_tomato.png','leaf_geranium.png'];
+    LEAF_IMAGES.forEach(src => { const i=new Image(); i.src=src; });
+
+    function spawnLeaf() {
+      const layer = document.getElementById('leaf-layer');
+      const img = document.createElement('img');
+      img.className = 'leaf';
+      img.src = LEAF_IMAGES[Math.floor(Math.random() * LEAF_IMAGES.length)];
+      img.alt = 'leaf';
+
+      const startXvw = Math.random() * 100;
+      const size     = 18 + Math.random() * 36;
+      const dur      = 2600 + Math.random() * 2200;
+      const swayDur  = 1400 + Math.random() * 1200;
+      const dx       = (Math.random() * 200 - 100) + 'px';
+      const rot      = (Math.random() * 360 * (Math.random() < .5 ? -1 : 1)) + 'deg';
+      const rA       = (Math.random() * 8 - 4) + 'deg';
+      const rB       = (Math.random() * 8 - 4) + 'deg';
+      const delay    = Math.random() * 250;
+
+      img.style.left = `calc(${startXvw}vw - ${size/2}px)`;
+      img.style.height = size + 'px';
+      img.style.setProperty('--dur',     dur + 'ms');
+      img.style.setProperty('--swayDur', swayDur + 'ms');
+      img.style.setProperty('--dx',      dx);
+      img.style.setProperty('--rot',     rot);
+      img.style.setProperty('--rA',      rA);
+      img.style.setProperty('--rB',      rB);
+      img.style.animationDelay = delay + 'ms';
+
+      layer.appendChild(img);
+      setTimeout(() => img.remove(), dur + 1400 + delay);
     }
 
-    function thankNature() {
-      const responses = [
-        "Спасибо! Природа чувствует твою заботу 🌿",
-        "Ты делаешь этот мир лучше 💚",
-        "Каждое доброе дело — это шаг к свету 🌞",
-        "Ты не один(а), природа с тобой 🍃"
-      ];
-      const randomMessage = responses[Math.floor(Math.random() * responses.length)];
-      document.getElementById("response").textContent = randomMessage;
+    function startAmbientLeaves() {
+      setInterval(() => { for (let i = 0; i < 3; i++) spawnLeaf(); }, 2200);
+      setInterval(spawnLeaf, 900);
     }
+
+    function burstLeaves(count = 20) {
+      for (let i = 0; i < count; i++) setTimeout(spawnLeaf, i * 60);
+    }
+
+    // ——— логика кнопки ———
+    let count = 0;
+    const quotes = [
+      "Каждый лист шепчет тебе спасибо 🌿",
+      "Ты — часть великого леса 🍃",
+      "Природа чувствует твою заботу 💚",
+      "Мир стал чуть светлее 🌞",
+      "Твои руки творят добро 🌍"
+    ];
+
+    function helpNature() {
+      count++;
+      document.getElementById("counter").textContent =
+        `Ты уже сделал ${count} добрых дел 💚`;
+      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("quote").textContent = randomQuote;
+
+      // залп листьев на каждое доброе действие
+      burstLeaves(28);
+    }
+
+    // Автозапуск «дымки» листьев при загрузке
+    window.addEventListener('DOMContentLoaded', startAmbientLeaves);
   </script>
 </body>
 </html>
