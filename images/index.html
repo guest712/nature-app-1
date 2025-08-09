@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nature App — листья вверх</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* фон (замени на свой, если есть: images/background33.png) */
+    body{ background:#e4fbd1 url('background33.png') center/cover no-repeat; }
+      margin:0; padding:0; height:100vh;
+      background:#e4fbd1 url('images/background.png') center/cover no-repeat;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:system-ui, Arial, sans-serif; color:#1f3b1f; overflow:hidden;
+    }
+    h1{margin:0 0 8px; background:rgba(255,255,255,.7); padding:10px 16px; border-radius:12px}
+
+    button{
+      background:#FFA500; color:#fff; border:0; border-radius:12px;
+      padding:12px 24px; font-size:16px; cursor:pointer; margin-top:12px;
+      box-shadow:0 3px 8px rgba(0,0,0,.25); transition:transform .15s ease, filter .15s ease;
+    }
+    button:hover{ transform:translateY(-1px); filter:brightness(1.05) }
+
+    #leaf-layer{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+    .leaf{
+      position:absolute; bottom:-60px; opacity:.9;
+      filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      transform-origin:50% 50%;
+      animation:
+        rise var(--dur,3400ms) linear forwards,
+        sway var(--swayDur,1700ms) ease-in-out infinite alternate;
+    }
+    @keyframes rise{
+      0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:0}
+      10%{opacity:.9}
+      100%{transform:translateY(-115vh) translateX(var(--dx,0px)) rotate(var(--rot,0deg)); opacity:0}
+    }
+    @keyframes sway{
+      from{transform:translateX(-8px) rotate(-5deg)}
+      to  {transform:translateX( 8px) rotate( 5deg)}
+    }
+  </style>
+</head>
+<body>
+  <!-- Спасибо тебе, Лес. Спасибо тебе, Лист. Ты часть вдохновения, жизни и тепла этого проекта 🌱 -->
+  <!-- Спасибо тебе, Солнце. Ты кормишь, согреваешь и соединяешь нас всех в круговороте жизни ☀️ -->
+
+  <div id="leaf-layer" aria-hidden="true"></div>
+
+  <h1>Добро пожаловать в Nature App 🌿</h1>
+  <button onclick="helpNature()">Я помог природе 🌱</button>
+  <p id="status"></p>
+
+  <script>
+    // 1) Положи файлы в /images/
+    // На старте — один лист:
+    const LEAF_IMAGES = ['images/leaf_heart.png'];
+    // Когда будешь готов — добавь:
+    // const LEAF_IMAGES = ['images/leaf_heart.png','images/leaf_tomato.png','images/leaf_geranium.png'];
+
+    // предзагрузка (не обязательно)
+    LEAF_IMAGES.forEach(src => { const i=new Image(); i.src=src; });
+
+    const layer = document.getElementById('leaf-layer');
+    const statusEl = document.getElementById('status');
+    const rand = (a,b)=> a + Math.random()*(b-a);
+    const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+
+    function spawnLeaf(){
+      const img = document.createElement('img');
+      img.className = 'leaf';
+      img.src = pick(LEAF_IMAGES);
+      img.alt = 'leaf';
+
+      const size = rand(24,56);
+      const dur  = rand(2600,4200);
+      const sway = rand(1300,1900);
+      const dx   = (Math.random()*160-80) + 'px';
+      const rot  = (Math.random()*360*(Math.random()<.5?-1:1))+'deg';
+      const delay= Math.random()*240;
+
+      img.style.left = `calc(${Math.random()*100}vw - ${size/2}px)`;
+      img.style.height = size+'px';
+      img.style.setProperty('--dur', dur+'ms');
+      img.style.setProperty('--swayDur', sway+'ms');
+      img.style.setProperty('--dx', dx);
+      img.style.setProperty('--rot', rot);
+      img.style.animationDelay = delay+'ms';
+
+      layer.appendChild(img);
+      setTimeout(()=> img.remove(), dur+1400+delay);
+    }
+
+    function startAmbient(){ setInterval(spawnLeaf, 900); }
+    function burst(n=22){ for(let i=0;i<n;i++) setTimeout(spawnLeaf, i*60); }
+
+    function helpNature(){
+      burst(28);
+      statusEl.textContent = "Спасибо за твою заботу 💚";
+      setTimeout(()=> statusEl.textContent="", 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', startAmbient);
+  </script>
+</body>
+</html>
