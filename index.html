@@ -2,6 +2,145 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <title>Nature App — листья вверх</title>
+  <style>
+    /* Слой для листьев */
+    #leaf-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+
+    .leaf{
+      position:absolute; bottom:-60px;
+      will-change:transform,opacity,filter;
+      filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      transform-origin:50% 50%;
+      opacity:var(--op,.9);
+      animation:
+        rise var(--dur,3600ms) linear forwards,
+        sway var(--swayDur,1800ms) ease-in-out infinite alternate,
+        flip var(--flipDur,2600ms) ease-in-out infinite;
+    }
+    @keyframes rise{
+      0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0}
+      10%{opacity:var(--op,.9)}
+      100%{transform:translateY(-115vh) translateX(var(--dx,0px)) rotate(var(--rot,0deg));opacity:0}
+    }
+    @keyframes sway{
+      from{transform:translateY(var(--y,0)) translateX(-10px) rotate(var(--rA,-6deg))}
+      to  {transform:translateY(var(--y,0)) translateX( 10px) rotate(var(--rB, 6deg))}
+    }
+    @keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(var(--flip,25deg))}100%{transform:rotateY(0)}}
+
+    .leaf.far  {filter:drop-shadow(0 1px 1px rgba(0,0,0,.18)) blur(.3px)}
+    .leaf.mid  {filter:drop-shadow(0 2px 2px rgba(0,0,0,.22))}
+    .leaf.near {filter:drop-shadow(0 3px 3px rgba(0,0,0,.28))}
+
+    @media (prefers-reduced-motion: reduce){ .leaf{animation-duration:calc(var(--dur,3600ms)*1.6)} }
+
+    body{
+      margin:0; padding:0; height:100vh;
+      background:#e4fbd1 url('leaves.png') center/cover no-repeat;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:Arial,sans-serif; color:#2e4d2e; overflow:hidden;
+    }
+    h1{background:rgba(255,255,255,.7); padding:10px 20px; border-radius:12px; margin:0 0 8px}
+    button{margin-top:16px; background:#FFA500; color:#fff; border:0; border-radius:12px; padding:12px 28px; cursor:pointer; font-size:18px}
+    button:hover{background:#ff8c00}
+    #quote{margin-top:12px; font-style:italic; text-align:center; max-width:320px}
+  </style>
+</head>
+<body>
+  <div id="leaf-layer" aria-hidden="true"></div>
+
+  <h1>Добро пожаловать в Nature App 🌿</h1>
+  <button onclick="helpNature()">Я помог природе 🌱</button>
+  <p id="quote"></p>
+
+  <script>
+    /* один PNG-источник */
+    const LEAF_IMAGES = ['leaf_heart.png'];
+    LEAF_IMAGES.forEach(src => { const i=new Image(); i.src=src; });
+
+    /* «ветер» — плавный снос по X */
+    const WIND = { vx: 0, target: 0 };
+    setInterval(()=>{ WIND.target = (Math.random()*220 - 110); }, 3000);
+    setInterval(()=>{ WIND.vx += (WIND.target - WIND.vx)*0.04; }, 50);
+
+    const layer = document.getElementById('leaf-layer');
+    const rand = (a,b)=> a + Math.random()*(b-a);
+    const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+
+    function spawnLeaf(whichLayer){
+      const img = document.createElement('img');
+      img.className = `leaf ${whichLayer || pick(['far','mid','near'])}`;
+      img.src = pick(LEAF_IMAGES);
+      img.alt = 'leaf';
+
+      // параметры по «глубине»
+      const L = img.classList.contains('far') ? {size:[14,28],  dur:[3600,5200], sway:[1700,2300], op:[.55,.7]} :
+                img.classList.contains('mid') ? {size:[18,40],  dur:[3000,4600], sway:[1500,2100], op:[.75,.9]} :
+                                                {size:[24,56],  dur:[2500,4000], sway:[1300,1900], op:[.85,.98]};
+
+      const size   = rand(...L.size);
+      const dur    = rand(...L.dur);
+      const sway   = rand(...L.sway);
+      const op     = rand(...L.op);
+
+      const startX = Math.random()*100; // vw
+      const dx     = (WIND.vx + (Math.random()*80-40)) + 'px';
+      const rot    = (Math.random()*360*(Math.random()<.5?-1:1))+'deg';
+      const rA     = (Math.random()*8 - 4)+'deg';
+      const rB     = (Math.random()*8 - 4)+'deg';
+      const flip   = (Math.random()*30 + 10)+'deg';
+      const flipDur= (Math.random()*1200 + 1800)+'ms';
+      const delay  = Math.random()*280;
+
+      img.style.left = `calc(${startX}vw - ${size/2}px)`;
+      img.style.height = size + 'px';
+      img.style.setProperty('--dur',     dur + 'ms');
+      img.style.setProperty('--swayDur', sway + 'ms');
+      img.style.setProperty('--dx',      dx);
+      img.style.setProperty('--rot',     rot);
+      img.style.setProperty('--rA',      rA);
+      img.style.setProperty('--rB',      rB);
+      img.style.setProperty('--op',      op);
+      img.style.setProperty('--flip',    flip);
+      img.style.setProperty('--flipDur', flipDur);
+      img.style.animationDelay = delay + 'ms';
+
+      layer.appendChild(img);
+      setTimeout(()=> img.remove(), dur + 1500 + delay);
+    }
+
+    function startAmbientLeaves(){
+      const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+      const burst = isMobile ? 2 : 3;
+      setInterval(()=>{ for(let i=0;i<burst;i++) spawnLeaf('far');  }, 2200);
+      setInterval(()=>{ for(let i=0;i<burst;i++) spawnLeaf('mid');  }, 1900);
+      setInterval(()=>{ for(let i=0;i<burst;i++) spawnLeaf('near'); }, 2400);
+      setInterval(()=> spawnLeaf(), isMobile ? 1200 : 900);
+    }
+
+    function burstLeaves(n=24){ for(let i=0;i<n;i++) setTimeout(()=>spawnLeaf('near'), i*55); }
+
+    window.addEventListener('DOMContentLoaded', startAmbientLeaves);
+
+    // кнопка
+    const quotes = [
+      "Каждый лист шепчет тебе спасибо 🌿",
+      "Ты — часть великого леса 🍃",
+      "Природа чувствует твою заботу 💚",
+      "Мир стал чуть светлее 🌞",
+    ];
+    function helpNature(){
+      document.getElementById('quote').textContent = pick(quotes);
+      burstLeaves(28);
+    }
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
   <title>Nature App — v1.1 🌿</title>
   <style>
     body {
