@@ -46,7 +46,7 @@
       margin: 0;
       padding: 0;
       height: 100vh;
-      background: #e4fbd1 url('leaves.png') center/cover no-repeat;
+      background: #e4fbd1 url("./images/background.png") center/cover no-repeat;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -101,7 +101,7 @@
     /* Спасибо тебе, Солнце. Ты кормишь, согреваешь и соединяешь нас всех в круговороте жизни ☀️ */
 
     // PNG-лист рядом с index.html
-    const LEAF_IMAGES = ['leaf_heart.png'];
+    const LEAF_IMAGES = ["./images/leaf_heart.png", "./images/leaf_tomato.png"];
      LEAF_IMAGES.forEach(src => { const i=new Image(); i.src=src; });
 
 const layer = document.getElementById('leaf-layer');
@@ -120,8 +120,9 @@ const WIND = { vx: 0, target: 0 };
     function spawnLeaf(){
   const img = document.createElement('img');
   img.className = 'leaf';
-  img.src = LEAF_IMAGES[0];
-  img.alt = 'leaf';
+  src="./images/logo.png" alt="Логотип" width="200"
+  <img src="./images/leaf_heart.png" alt="Лист-сердце" width="160">
+img.alt = 'leaf';
 
   const size = rand(24,56);
   const dur  = rand(2600,4200);

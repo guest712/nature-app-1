@@ -18,4 +18,5 @@ function showAction() {
 }
 <!-- добавь -->
 <!-- Версия обновлена вручную -->
+<script src="./script.js"></script>
 
