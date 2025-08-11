@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!-- Спасибо тебе, Лес. Спасибо тебе, Лист. Ты часть вдохновения, жизни и тепла этого проекта 🌱 -->
+<!-- Спасибо тебе, Солнце. Ты кормишь, согреваешь и соединяешь нас всех в круговороте жизни ☀️ -->
+<!-- 🌿✨ Здесь горит Маяк Света и Доброты. Пусть он всегда ведёт нас к теплу, природе и честной работе ✨🌿 -->
+ 
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nature App</title>
+  <style>
+    /* слой листьев */
+    #leaf-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.leaf {
+  position: absolute;
+  bottom: -60px;
+  opacity: .9;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+  transform-origin: 50% 50%;
+  animation:
+    rise var(--dur, 3500ms) linear forwards,
+    sway var(--swayDur, 1800ms) ease-in-out infinite alternate;
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-110vh) rotate(var(--rot, 0deg));
+    opacity: 0;
+  }
+}
+
+@keyframes sway {
+  to {
+    transform: translateX(var(--sway, 20px)) rotate(var(--rotEnd, 360deg));
+  }
+}
+
+
+    body{
+      margin:0; padding:0; height:100vh;
+      background:#e4fbd1 url("./images/background.png") center/cover no-repeat;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:Arial, sans-serif; color:#2e4d2e; overflow:hidden;
+    }
+    h1{background:rgba(255,255,255,.7); padding:10px 20px; border-radius:12px; margin:0 0 8px}
+    #counter{font-size:20px; margin-top:10px}
+    button{
+      background:orange; color:white; padding:15px 30px; border:0; border-radius:12px;
+      cursor:pointer; font-size:18px; margin-top:20px; box-shadow:0 3px 6px rgba(0,0,0,.3);
+      transition:transform .15s ease, filter .15s ease;
+    }
+    button:hover{background:darkorange; transform:translateY(-1px); filter:brightness(1.03)}
+    #quote{margin-top:15px; font-style:italic; text-align:center; max-width:300px}
+  </style>
+</head>
+<body>
+  <div id="leaf-layer"></div>
+
+  <h1>Добро пожаловать в Nature App 🌿</h1>
+  <p id="counter">Ты уже сделал 0 добрых дел 💚</p>
+  <button id="mainBtn">Я помог природе 🌱</button>
+  <button id="leafButton">Появись, Лист!</button>
+  <p id="quote"></p>
+
+  <script>
+    // картинки (для GitHub Pages лучше без ведущего слэша)
+    const LEAF_IMAGES = ['images/leaf_heart.png', 'images/leaf_tomato.png'];
+
+    // один лист
+    function spawnLeaf() {
+      const leaf = document.createElement('img');
+      leaf.src = LEAF_IMAGES[Math.floor(Math.random() * LEAF_IMAGES.length)];
+      leaf.className = 'leaf';
+      leaf.style.left = Math.random() * 100 + 'vw';
+      leaf.style.setProperty('--dur', 3000 + Math.random() * 2000 + 'ms');
+      leaf.style.setProperty('--sway', (Math.random() * 40 - 20) + 'px');
+      leaf.style.setProperty('--rot', Math.random() * 360 + 'deg');
+      leaf.style.setProperty('--rotEnd', Math.random() * 360 + 'deg');
+      document.getElementById('leaf-layer').appendChild(leaf);
+      setTimeout(() => leaf.remove(), 5000);
+    }
+
+    // «залп» листьев
+    function burstLeaves(count = 20) {
+      for (let i = 0; i < count; i++) setTimeout(spawnLeaf, i * 80);
+    }
+
+    // ——— логика первой кнопки
+    let count = 0;
+    const quotes = [
+      "Каждый лист шепчет тебе спасибо 🌿",
+      "Ты — часть великого леса 🍃",
+      "Природа чувствует твою заботу 💚",
+      "Мир стал чуть светлее 🌞",
+      "Твои руки творят добро 🌍"
+    ];
+    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const mainBtn = document.getElementById('mainBtn');
+      const leafBtn = document.getElementById('leafButton');
+
+      mainBtn.addEventListener('click', () => {
+        count++;
+        document.getElementById('counter').textContent =
+          `Ты уже сделал ${count} добрых дел 💚`;
+        document.getElementById('quote').textContent = pick(quotes);
+        burstLeaves(28);
+      });
+
+      leafBtn.addEventListener('click', spawnLeaf);
+    });
+
+    // ВАЖНО: убрали несуществующие вызовы startAmbient() и burst()
+  </script>
+</body>
+
+</html>
