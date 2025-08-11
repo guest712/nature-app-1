@@ -14,8 +14,9 @@ const actions = [
 function showAction() {
   const randomIndex = Math.floor(Math.random() * actions.length);
   const action = actions[randomIndex];
-  document.getElementById("actionText").innerText = action;
-}
+  window.onload = function() {
+    document.getElementById("leafButton").addEventListener("click", spawnLeaf);
+};
 <!-- добавь -->
 <!-- Версия обновлена вручную -->
 <script src="./script.js"></script>
