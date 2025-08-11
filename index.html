@@ -6,65 +6,59 @@
 <!DOCTYPE html>
 <!-- 🌿✨ Маяк Света и Доброты ✨🌿 -->
 
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <title>Nature App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- ===== FIX: минимальный полёт одного листа ===== -->
-<style>
-  #leaf-layer{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:9999;}
-  .leaf{
-    position:absolute; bottom:-60px; height:40px; opacity:.95;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-    transform-origin:50% 50%;
-    animation:
-      rise var(--dur,3200ms) linear forwards,
-      sway var(--sway,1800ms) ease-in-out infinite alternate;
-  }
-  @keyframes rise{
-    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0 }
-    8%{ opacity:1 }
-    100%{ transform:translateY(-115vh) translateX(var(--dx,0px)) rotate(var(--rotEnd,180deg)); opacity:0 }
-  }
-  @keyframes sway{
-    from{ transform:translateX(-8px) rotate(-6deg) }
-    to  { transform:translateX( 8px) rotate( 6deg) }
-  }
-</style>
+  <!-- необязательный фавикон, чтобы убрать 404 -->
+  <link rel="icon" href="data:,">
 
-<div id="leaf-layer" aria-hidden="true"></div>
+  <style>
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #e9f9d8 url("./images/background33.png") center/cover no-repeat fixed;
+      overflow: hidden; padding: 24px;
+    }
 
-<script>
-  // ВАЖНО: файлы должны лежать в ./images/ рядом с index.html
-  const LEAF_IMAGES = ["./images/leaf_heart.png","./images/leaf_tomato.png"];
+    #leaf-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+    .panel {
+      position: relative; z-index: 2;
+      background: #ffffffc0; padding: 16px 20px; border-radius: 14px;
+      backdrop-filter: saturate(1.2) blur(4px);
+      text-align: center;
+    }
+    .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+    button { cursor: pointer; border: 0; border-radius: 10px; padding: 10px 16px; font-size: 16px; color: #fff; background: #4caf50; }
+    button:hover { background: #439a47; }
+    .ghost { background: #ff8c00; }
+    .ghost:hover { background: #e57f00; }
+    #counter { margin-top: 6px; font-weight: 600; }
 
-  function spawnLeaf(){
-    const img = new Image();
-    img.className = "leaf";
-    img.src = LEAF_IMAGES[Math.floor(Math.random()*LEAF_IMAGES.length)];
-    img.style.left = (Math.random()*100) + "vw";
-    img.style.setProperty("--dur", 2800 + Math.random()*2400 + "ms");
-    img.style.setProperty("--sway", 1300 + Math.random()*1200 + "ms");
-    img.style.setProperty("--dx", (Math.random()*200-100) + "px");
-    img.style.setProperty("--rotEnd", (Math.random()*360) + "deg");
-    document.getElementById("leaf-layer").appendChild(img);
-    setTimeout(()=>img.remove(), 6000);
-  }
-
-  // тест: один лист через 500 мс после загрузки
-  window.addEventListener("load", () => {
-    console.log("TEST: try spawn one leaf");
-    spawnLeaf();
-  });
-
-  // если хочешь: кнопка по id="helpBtn" будет делать «залп»
-  const btn = document.getElementById("helpBtn");
-  if (btn) btn.addEventListener("click", () => {
-    for (let i=0;i<24;i++) setTimeout(spawnLeaf, i*70);
-  });
-</script>
-<!-- ===== END FIX ===== -->
+    /* листья */
+    .leaf {
+      position: absolute; bottom: -60px; opacity: .9; transform-origin: 50% 50%;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      /* ВАЖНО: обе анимации в одном свойстве */
+      animation: rise var(--dur, 3200ms) linear forwards,
+                 sway var(--sway, 1800ms) ease-in-out infinite alternate;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+      8%   { opacity: 1; }
+      100% { transform: translateY(-115vh) translateX(var(--dx,0px)) rotate(var(--rotEnd,180deg)); opacity: 0; }
+    }
+    @keyframes sway {
+      from { transform: translateX(-10px) rotate(-6deg); }
+      to   { transform: translateX( 10px) rotate( 6deg); }
+    }
+  </style>
 </head>
 <body>
   <div id="leaf-layer" aria-hidden="true"></div>
@@ -79,44 +73,47 @@
   </div>
 
   <script>
-    // Пути строго относительные (работают и локально, и на GitHub Pages)
+    // относительные пути — без начального /
     const LEAF_IMAGES = ["./images/leaf_heart.png", "./images/leaf_tomato.png"];
 
-    // один лист
+    // (необязательно) предварительная загрузка
+    LEAF_IMAGES.forEach(src => { const i = new Image(); i.src = src; });
+
     function spawnLeaf() {
-      const leaf = document.createElement('img');
-      img.className = "leaf";
-      img.src = LEAF_IMAGES[Math.floor(Math.random()*LEAF_IMAGES.length)];
+      // ВАЖНО: объявляем переменную ПЕРЕД использованием
+      const img = document.createElement('img');
+      img.className = 'leaf';
+      img.src = LEAF_IMAGES[Math.floor(Math.random() * LEAF_IMAGES.length)];
 
-      const size = 22 + Math.random()*26;
-      img.style.height = size + "px";
-      img.style.left = (Math.random()*100) + "vw";
+      const size = 24 + Math.random()*28;
+      img.style.height = size + 'px';
+      img.style.left   = Math.random()*100 + 'vw';
+      img.style.setProperty('--dur',    (2800 + Math.random()*2400) + 'ms');
+      img.style.setProperty('--sway',   (1200 + Math.random()*1400) + 'ms');
+      img.style.setProperty('--dx',     (Math.random()*200 - 100) + 'px');
+      img.style.setProperty('--rotEnd', (Math.random()*360) + 'deg');
 
-      // параметры анимации
-      img.style.setProperty("--dur", 2800 + Math.random()*2400 + "ms");
-      img.style.setProperty("--sway", 1300 + Math.random()*1200 + "ms");
-      img.style.setProperty("--dx", (Math.random()*200 - 100) + "px");
-      img.style.setProperty("--rotEnd", (Math.random()*360) + "deg");
-
-      document.getElementById("leaf-layer").appendChild(img);
-      setTimeout(()=> img.remove(), 6000);
+      document.getElementById('leaf-layer').appendChild(img);
+      setTimeout(() => img.remove(), 6000);
     }
 
-    // «залп» листьев
-    function burstLeaves(n=24){ for (let i=0;i<n;i++) setTimeout(spawnLeaf, i*70); }
+    function burstLeaves(n = 20) {
+      for (let i = 0; i < n; i++) setTimeout(spawnLeaf, i * 70);
+    }
 
-    // счётчик и кнопки
+    // счётчик + «залп» на зелёной кнопке
     let count = 0;
-    document.getElementById("helpBtn").addEventListener("click", () => {
+    document.getElementById('helpBtn').addEventListener('click', () => {
       count++;
-      document.getElementById("counter").textContent = `Ты уже сделал ${count} добрых дел 💚`;
+      document.getElementById('counter').textContent = `Ты уже сделал ${count} добрых дел 💚`;
       burstLeaves(24);
     });
 
-    document.getElementById("leafBtn").addEventListener("click", spawnLeaf);
+    // одиночный лист на оранжевой кнопке
+    document.getElementById('leafBtn').addEventListener('click', spawnLeaf);
 
-    // мягкий фоновый поток
-    setInterval(()=> spawnLeaf(), 1400);
+    // мягкий фоновый поток листьев
+    setInterval(spawnLeaf, 1500);
   </script>
 </body>
 </html>
