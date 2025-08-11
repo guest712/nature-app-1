@@ -69,10 +69,10 @@
   <p id="quote"></p>
 
   <script>
-    // картинки (для GitHub Pages лучше без ведущего слэша)
+    / картинки (для GitHub Pages лучше без ведущего слэша)
     const LEAF_IMAGES = ['images/leaf_heart.png', 'images/leaf_tomato.png'];
 
-    // один лист
+    / один лист
     function spawnLeaf() {
       const leaf = document.createElement('img');
       leaf.src = LEAF_IMAGES[Math.floor(Math.random() * LEAF_IMAGES.length)];
@@ -86,12 +86,12 @@
       setTimeout(() => leaf.remove(), 5000);
     }
 
-    // «залп» листьев
+    / «залп» листьев
     function burstLeaves(count = 20) {
       for (let i = 0; i < count; i++) setTimeout(spawnLeaf, i * 80);
     }
 
-    // ——— логика первой кнопки
+    / ——— логика первой кнопки
     let count = 0;
     const quotes = [
       "Каждый лист шепчет тебе спасибо 🌿",
