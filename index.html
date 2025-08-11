@@ -10,18 +10,18 @@
   <title>Nature App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root{--bg:#eaf7e9}
+    :root { --bg: #e4fbd1; }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family:system-ui,Arial,sans-serif; color:#244;
+      margin:0; min-height:100vh; font-family: Arial, sans-serif;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       background: var(--bg) url("./images/background33.png") center/cover no-repeat fixed;
 
-      overflow:hidden; text-align:center; padding:24px;
+      overflow:hidden; align-items:center; padding:24px;
     }
     h1{margin:0 0 8px}
-    #leaf-layer{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1}
+    #leaf-layer{position:fixed; inset:0; pointer-events:none; overflow:hidden;}
     .panel{position:relative; z-index:2; background:#ffffffc0; padding:16px 20px; border-radius:14px; backdrop-filter:saturate(1.2) blur(4px)}
     .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px}
     button{cursor:pointer; border:none; border-radius:10px; padding:10px 16px; font-size:16px; background:#4caf50; color:#fff}
@@ -30,16 +30,15 @@
     .ghost:hover{background:#e57f00}
     #counter{margin-top:6px; font-weight:600}
     /* анимация листа */
-    .leaf{
-      position:absolute; bottom:-60px; height:40px; opacity:.95;
+    .leaf{position:absolute; bottom:-60px; will-change:transform,opacity; opacity:.9;
       filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-      animation: rise var(--dur,3800ms) linear forwards, sway var(--sway,1800ms) ease-in-out infinite alternate;
+      animation: rise var(--dur,3s) linear forwards;} sway var(--sway,1800ms) ease-in-out infinite alternate;
       transform-origin:50% 50%;
     }
     @keyframes rise{
-      0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:0}
+      0%{transform:translateY(-110vh) translateX(0) rotate(0deg); opacity:0}
       8%{opacity:1}
-      100%{transform:translateY(-115vh) translateX(var(--dx,0px)) rotate(var(--rotEnd,180deg)); opacity:0}
+      100%{transform:translateY(0) translateX(var(--dx,0px)) rotate(var(--rotEnd,180deg)); opacity:0}
     }
     @keyframes sway{
       from{transform:translateX(-8px) rotate(-6deg)}
@@ -48,7 +47,7 @@
   </style>
 </head>
 <body>
-  <div id="leaf-layer" aria-hidden="true"></div>
+  <div id="leaf-layer"></div>
 
   <div class="panel">
     <h1>Добро пожаловать в Nature App 🌿</h1>
@@ -64,7 +63,7 @@
   const LEAF_IMAGES = ["./images/leaf_heart.png", "./images/leaf_tomato.png"];
 
   function spawnLeaf(){
-    const img = document.createElement("img");
+    const img = document.createElement('img');
     img.className = "leaf";
     img.src = LEAF_IMAGES[Math.floor(Math.random()*LEAF_IMAGES.length)];
     const size = 22 + Math.random()*26;
@@ -74,8 +73,8 @@
     img.style.setProperty("--sway", 1300 + Math.random()*1200 + "ms");
     img.style.setProperty("--dx", (Math.random()*200-100) + "px");
     img.style.setProperty("--rotEnd", (Math.random()*360)+"deg");
-    document.getElementById("leaf-layer").appendChild(img);
-    setTimeout(()=>img.remove(), 6000);
+    document.getElementById('leaf-layer').appendChild(img);
+    setTimeout(()=>img.remove(), 5000);
   }
 
   function burstLeaves(n=20){ for(let i=0;i<n;i++) setTimeout(spawnLeaf, i*70); }
