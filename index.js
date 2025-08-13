@@ -1,102 +1,80 @@
-const express = require('express');
-const path = require('path');
-
-const app = express();
-const port = 3000;
-
-// Сказать Express'у, где лежат статические файлы
-app.use(express.static('public'));
-// Отправлять HTML-файл при переходе на главную страницу
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Запуск сервера
-app.listen(port, () => {
-  console.log(`Приложение запущено: http://localhost:${port}`);
-});
-app.get('/eco-tip', (req, res) => {
-  res.send(`'Вот экологический совет дня: выключай свет, когда выходишь 🌍');
-});
-    <h1>Совет дня 🌱</h1>
-    <p>Не выбрасывай окурки на землю — Земля помнит всё 🌍🚭</p>
-    <a href="/">Назад</a>
-  `);
-});
-// --- Настройка изображений (пути относительно КОРНЯ репозитория) ---
+// ---------- images you have in /images ----------
 const LEAF_IMAGES = [
   "./images/leaf_heart.png",
   "./images/leaf_tomato.png",
-  // можно добавлять больше...
+  // add more later…
 ];
 
-// Подгрузим их, чтобы анимация не «пустая»
+// (optional) preload so they appear instantly
 LEAF_IMAGES.forEach(src => { const i = new Image(); i.src = src; });
 
-// Счетчик и фразочки
+// ---------- leaf animation ----------
+function spawnLeaf() {
+  const layer = document.getElementById("leaf-layer");
+  if (!layer) return;
+
+  const img = document.createElement("img");
+  img.className = "leaf";
+  img.src = LEAF_IMAGES[Math.floor(Math.random() * LEAF_IMAGES.length)];
+  img.alt = "leaf";
+
+  // randomize
+  const startXvw = Math.random() * 100;
+  const size     = 18 + Math.random() * 36;  // 18–54px
+  const dur      = 2600 + Math.random() * 2200;
+  const swayDur  = 1400 + Math.random() * 1200;
+  const dx       = (Math.random() * 200 - 100) + "px";
+  const rot      = (Math.random() < 0.5 ? -1 : 1) * Math.floor(Math.random()*360) + "deg";
+  const rA       = (Math.random() * 8 - 4) + "deg";
+  const rB       = (Math.random() * 8 - 4) + "deg";
+  const delay    = Math.random() * 250;
+
+  img.style.left = `calc(${startXvw}vw - ${size/2}px)`;
+  img.style.height = size + "px";
+  img.style.setProperty("--dur",     dur + "ms");
+  img.style.setProperty("--swayDur", swayDur + "ms");
+  img.style.setProperty("--dx",      dx);
+  img.style.setProperty("--rot",     rot);
+  img.style.setProperty("--rA",      rA);
+  img.style.setProperty("--rB",      rB);
+  img.style.animationDelay = delay + "ms";
+
+  layer.appendChild(img);
+  setTimeout(() => img.remove(), dur + 1200 + delay);
+}
+
+function startAmbientLeaves() {
+  setInterval(() => { for (let i = 0; i < 3; i++) spawnLeaf(); }, 2200);
+  setInterval(spawnLeaf, 900);
+}
+
+function burstLeaves(count = 24) {
+  for (let i = 0; i < count; i++) setTimeout(spawnLeaf, i * 60);
+}
+
+// ---------- counter + quote ----------
 let count = 0;
 const quotes = [
   "Каждый лист шепчет тебе спасибо 🌿",
   "Ты — часть великого леса 🍃",
   "Природа чувствует твою заботу 💚",
   "Мир стал чуть светлее 🌞",
-  "Твои руки творят добро 🌍",
+  "Твои руки творят добро 🌍"
 ];
 
-function setCounterAndQuote() {
+function helpNature() {
   count++;
-  document.getElementById("counter").textContent =
-    `Ты уже сделал ${count} добрых дел 💚`;
-  const q = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById("quote").textContent = q;
+  const counterEl = document.getElementById("counter");
+  const quoteEl   = document.getElementById("quote");
+  if (counterEl) counterEl.textContent = `Ты уже сделал ${count} добрых дел 💚`;
+  if (quoteEl)   quoteEl.textContent   = quotes[Math.floor(Math.random()*quotes.length)];
+  burstLeaves();
 }
 
-// Листок
-function spawnLeaf() {
-  const layer = document.getElementById("leaf-layer");
-  const img = document.createElement("img");
-  img.className = "leaf";
-  img.src = LEAF_IMAGES[Math.floor(Math.random() * LEAF_IMAGES.length)];
-  img.alt = "leaf";
+// make helpNature available for the button onclick
+window.helpNature = helpNature;
 
-  const startX = Math.random() * 100;            // vw
-  const size   = 18 + Math.random() * 36;        // px
-  const dur    = 2600 + Math.random() * 2200;    // ms
-  const sway   = 1400 + Math.random() * 1200;    // ms
-  const dx     = (Math.random() * 200 - 100) + "px";
-  const rot    = (Math.random() * 360 * (Math.random()<.5?-1:1)) + "deg";
-  const rA     = (Math.random() * 8 - 4) + "deg";
-  const rB     = (Math.random() * 8 - 4) + "deg";
-  const delay  = Math.random() * 250;
-
-  img.style.left = `calc(${startX}vw - ${size/2}px)`;
-  img.style.height = size + "px";
-  img.style.setProperty("--dur",  dur + "ms");
-  img.style.setProperty("--sway", sway + "ms");
-  img.style.setProperty("--dx",   dx);
-  img.style.setProperty("--rot",  rot);
-  img.style.setProperty("--rA",   rA);
-  img.style.setProperty("--rB",   rB);
-  img.style.animationDelay = delay + "ms";
-
-  layer.appendChild(img);
-  setTimeout(() => img.remove(), dur + 1400 + delay);
-}
-
-// Мягкий постоянный поток
-function startAmbient() {
-  setInterval(() => { for (let i=0;i<3;i++) spawnLeaf(); }, 2200);
-  setInterval(spawnLeaf, 900);
-}
-
-// «Залп» при клике
-function burst(n=24){ for(let i=0;i<n;i++) setTimeout(spawnLeaf, i*60); }
-
-// Навешиваем обработчики
+// start everything when the page is ready
 window.addEventListener("DOMContentLoaded", () => {
-  startAmbient();
-  document.getElementById("helpBtn").addEventListener("click", () => {
-    setCounterAndQuote();
-    burst(30);
-  });
+  startAmbientLeaves();
 });
