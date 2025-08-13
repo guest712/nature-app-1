@@ -3,89 +3,67 @@
 <!-- Спасибо тебе, Солнце. Ты кормишь, согреваешь и соединяешь нас всех в круговороте жизни ☀️ -->
 <!-- 🌿✨ Здесь горит Маяк Света и Доброты. Пусть он всегда ведёт нас к теплу, природе и честной работе ✨🌿 -->
 <!-- 🌿✨ Маяк Света и Доброты ✨🌿 -->
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Nature App — листья вверх</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nature App</title>
   <style>
+    :root { --bg:#e8fbdc; --green:#1f5f2e; --accent:#ffa726; --accent2:#fb8c00; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; height:100vh; overflow:hidden;
-      background:#e4fbd1;
-      display:flex; align-items:center; justify-content:center; flex-direction:column;
-      font-family:system-ui, Arial, sans-serif; color:#1f3b1f;
+      margin:0; display:flex; align-items:center; justify-content:center;
+      font-family:system-ui,Arial,sans-serif; color:var(--green);
+      background:var(--bg);
+      overflow:hidden;
     }
-    #leaf-layer{position:fixed; inset:0; pointer-events:none; overflow:hidden}
+    .card{
+      text-align:center; padding:24px 28px; border-radius:16px;
+      background:#ffffffb3; backdrop-filter:blur(6px);
+      box-shadow:0 10px 24px rgba(0,0,0,.08);
+    }
+    h1{margin:0 0 16px; font-weight:700}
+    #counter{margin:6px 0 14px; font-weight:600}
+    button{
+      border:0; padding:10px 18px; border-radius:12px; cursor:pointer;
+      background:var(--accent); color:#fff; font-weight:700;
+      box-shadow:0 4px 12px rgba(251,140,0,.35);
+    }
+    button:hover{ background:var(--accent2) }
+
+    /* Слой для «взлетающих» листьев */
+    #leaf-layer{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
     .leaf{
-      position:absolute; bottom:-60px; opacity:.9;
+      position:absolute; bottom:-60px; opacity:.95;
       filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));
       transform-origin:50% 50%;
-      animation:
-        rise var(--dur,3400ms) linear forwards,
-        sway var(--swayDur,1700ms) ease-in-out infinite alternate;
+      animation: rise var(--dur,3400ms) linear forwards,
+                 sway var(--sway,1600ms) ease-in-out infinite alternate;
     }
     @keyframes rise{
-      0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:0}
-      10%{opacity:.9}
-      100%{transform:translateY(-115vh) translateX(var(--dx,0px)) rotate(var(--rot,0deg)); opacity:0}
+      0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0 }
+      10%{ opacity:1 }
+      100%{ transform:translateY(-115vh) translateX(var(--dx,0)) rotate(var(--rot,0)); opacity:0 }
     }
     @keyframes sway{
-      from{transform:translateX(-8px) rotate(-5deg)}
-      to  {transform:translateX( 8px) rotate( 5deg)}
+      from{ transform:translateY(var(--y,0)) translateX(-8px) rotate(var(--rA,-6deg)) }
+      to  { transform:translateY(var(--y,0)) translateX( 8px) rotate(var(--rB, 6deg)) }
     }
-    button{
-      margin-top:14px; background:#FFA500; color:#fff; border:0; border-radius:12px;
-      padding:12px 24px; font-size:16px; cursor:pointer;
-      box-shadow:0 3px 8px rgba(0,0,0,.25);
-    }
-    button:hover{filter:brightness(1.05)}
   </style>
 </head>
 <body>
   <div id="leaf-layer" aria-hidden="true"></div>
 
-  <h1>Добро пожаловать в Nature App 🌿</h1>
-  <button onclick="burst(26)">Я помог природе 🌱</button>
+  <div class="card">
+    <h1>Добро пожаловать в Nature App 🌿</h1>
+    <div id="counter">Ты уже сделал 0 добрых дел 💚</div>
+    <button id="helpBtn">Я помог природе 🌱</button>
+    <div id="quote"></div>
+  </div>
 
-  <script>
-    const LEAF_IMAGES = ["./images/leaf_tomato.png"]; // путь к твоему PNG
-
-    // предзагрузка
-    LEAF_IMAGES.forEach(src => { const i=new Image(); i.src=src; });
-
-    const layer = document.getElementById('leaf-layer');
-    const rand = (a,b)=> a + Math.random()*(b-a);
-    const pick = arr => arr[Math.floor(Math.random()*arr.length)];
-
-    function spawnLeaf(){
-      const img = document.createElement('img');
-      img.className = 'leaf';
-      img.src = pick(LEAF_IMAGES);
-      img.alt = 'leaf';
-
-      const size = rand(24,56);
-      const dur  = rand(2600,4200);
-      const sway = rand(1300,1900);
-      const dx   = (Math.random()*160-80) + 'px';
-      const rot  = (Math.random()*360*(Math.random()<.5?-1:1))+'deg';
-      const delay= Math.random()*240;
-
-      img.style.left = `calc(${Math.random()*100}vw - ${size/2}px)`;
-      img.style.height = size+'px';
-      img.style.setProperty('--dur', dur+'ms');
-      img.style.setProperty('--swayDur', sway+'ms');
-      img.style.setProperty('--dx', dx);
-      img.style.setProperty('--rot', rot);
-      img.style.animationDelay = delay+'ms';
-
-      layer.appendChild(img);
-      setTimeout(()=> img.remove(), dur+1400+delay);
-    }
-
-    function startAmbient(){ setInterval(spawnLeaf, 900); }
-    function burst(n=24){ for(let i=0;i<n;i++) setTimeout(spawnLeaf, i*60); }
-
-    window.addEventListener('DOMContentLoaded', startAmbient);
-  </script>
+  <!-- ВАЖНО: ровно такой путь и нижний регистр! -->
+  <script defer src="./index.js"></script>
 </body>
 </html>
